@@ -2,231 +2,280 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CHUNNTATTOO | Booking Guide & Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #ffffff;
             color: #1c1917;
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
+            letter-spacing: 0.02em;
+            -webkit-overflow-scrolling: touch;
         }
+        
         .fade-in {
-            animation: fadeIn 0.6s ease-out forwards;
+            animation: fadeIn 0.8s cubic-bezier(0.2, 0, 0.2, 1) forwards;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .nav-active { color: #000; font-weight: 700; border-bottom: 2px solid #000; }
         
-        /* 隱藏滾動條但保持滾動功能 */
+        .nav-active { 
+            color: #000; 
+            font-weight: 600; 
+            position: relative;
+        }
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background-color: #000;
+            border-radius: 50%;
+        }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* 圖片佔位符樣式 */
-        .img-placeholder {
-            background-color: #f5f5f4;
-            aspect-ratio: 3/4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: #a8a29e;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
+        .portfolio-card {
+            position: relative;
+            background-color: #fafaf9;
+            aspect-ratio: 4/5;
+            overflow: hidden;
             border-radius: 2px;
-            transition: opacity 0.3s;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
         }
-        .img-placeholder:hover {
-            opacity: 0.8;
+        .portfolio-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .portfolio-card:active img {
+            transform: scale(0.98);
+        }
+
+        footer {
+            padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
+        }
+
+        nav {
+            padding-top: env(safe-area-inset-top);
         }
     </style>
 </head>
 <body class="bg-white">
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-stone-100">
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-2xl z-50 border-b border-stone-50">
         <div class="max-w-screen-md mx-auto px-6 py-5 flex justify-between items-center">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-[0.4em]">CHUNNTATTOO</span>
-                <span class="text-[9px] tracking-[0.2em] text-stone-400 uppercase">Art & Inquiry</span>
+                <span class="text-lg font-bold tracking-[0.3em]">CHUNNTATTOO</span>
+                <span class="text-[8px] tracking-[0.2em] text-stone-400 uppercase mt-0.5">Art & Inquiry</span>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="max-w-screen-md mx-auto px-6 pt-32 pb-32">
+    <main class="max-w-screen-md mx-auto px-5 pt-32 pb-32">
         
-        <!-- Tab Buttons (Mobile Friendly Scroll) -->
-        <div class="flex overflow-x-auto gap-8 mb-12 pb-2 no-scrollbar border-b border-stone-50">
-            <button onclick="showTab('portfolio')" id="btn-portfolio" class="tab-btn pb-2 text-xs tracking-widest uppercase text-stone-400 whitespace-nowrap nav-active">Portfolio 作品</button>
-            <button onclick="showTab('process')" id="btn-process" class="tab-btn pb-2 text-xs tracking-widest uppercase text-stone-400 whitespace-nowrap">Process 流程</button>
-            <button onclick="showTab('notice')" id="btn-notice" class="tab-btn pb-2 text-xs tracking-widest uppercase text-stone-400 whitespace-nowrap">Notice 須知</button>
-            <button onclick="showTab('faq')" id="btn-faq" class="tab-btn pb-2 text-xs tracking-widest uppercase text-stone-400 whitespace-nowrap">FAQ 問答</button>
-            <button onclick="showTab('booking')" id="btn-booking" class="tab-btn pb-2 text-xs tracking-widest uppercase text-stone-400 whitespace-nowrap">Book 預約</button>
+        <div class="flex overflow-x-auto gap-8 mb-12 pb-4 no-scrollbar border-b border-stone-50 sticky top-20 bg-white/50 backdrop-blur-sm z-40">
+            <button onclick="showTab('portfolio')" id="btn-portfolio" class="tab-btn text-[10px] tracking-[0.15em] uppercase text-stone-400 whitespace-nowrap transition-colors py-2 nav-active">Portfolio 作品</button>
+            <button onclick="showTab('process')" id="btn-process" class="tab-btn text-[10px] tracking-[0.15em] uppercase text-stone-400 whitespace-nowrap transition-colors py-2">Process 流程</button>
+            <button onclick="showTab('notice')" id="btn-notice" class="tab-btn text-[10px] tracking-[0.15em] uppercase text-stone-400 whitespace-nowrap transition-colors py-2">Notice 須知</button>
+            <button onclick="showTab('faq')" id="btn-faq" class="tab-btn text-[10px] tracking-[0.15em] uppercase text-stone-400 whitespace-nowrap transition-colors py-2">FAQ 問答</button>
+            <button onclick="showTab('booking')" id="btn-booking" class="tab-btn text-[10px] tracking-[0.15em] uppercase text-stone-400 whitespace-nowrap transition-colors py-2">Book 預約</button>
         </div>
 
-        <!-- Section: Portfolio (NEW) -->
         <div id="portfolio" class="tab-content active fade-in">
             <div class="mb-10 text-center">
-                <h2 class="text-2xl font-light tracking-widest uppercase mb-1">Recent Works</h2>
-                <p class="text-xs text-stone-400 uppercase tracking-widest italic">精選作品展示</p>
+                <h2 class="text-2xl font-light tracking-[0.15em] uppercase mb-2">Recent Works</h2>
+                <div class="w-6 h-px bg-stone-200 mx-auto mb-3"></div>
+                <p class="text-[9px] text-stone-400 uppercase tracking-[0.2em]">近期作品</p>
             </div>
-            <!-- 作品網格：手機 2 欄，平板以上 3 欄 -->
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                <!-- 您只需要將 src="" 替換成實際圖片網址即可 -->
-                <div class="img-placeholder">Work 01</div>
-                <div class="img-placeholder">Work 02</div>
-                <div class="img-placeholder">Work 03</div>
-                <div class="img-placeholder">Work 04</div>
-                <div class="img-placeholder">Work 05</div>
-                <div class="img-placeholder">Work 06</div>
-                <div class="img-placeholder">Work 07</div>
-                <div class="img-placeholder">Work 08</div>
-                <div class="img-placeholder">Work 09</div>
-            </div>
-            <p class="text-[10px] text-stone-300 text-center mt-8 tracking-widest uppercase">View more on Instagram @Chunntattoo</p>
+            
+            <div id="portfolio-grid" class="grid grid-cols-2 gap-3 md:grid-cols-3"></div>
+            
+            <p class="text-[9px] text-stone-300 text-center mt-12 tracking-[0.15em] uppercase">View more on Instagram <a href="https://www.instagram.com/chunntattoo/" target="_blank" class="underline underline-offset-4 decoration-stone-200 hover:text-stone-500 transition-colors">@Chunntattoo</a></p>
         </div>
 
-        <!-- Section: Process -->
         <div id="process" class="tab-content fade-in">
-            <div class="mb-10">
-                <h2 class="text-2xl font-light tracking-widest uppercase mb-1">Booking Process</h2>
-                <p class="text-xs text-stone-400 uppercase tracking-widest italic">預約流程說明</p>
+            <div class="mb-12">
+                <h2 class="text-xl font-light tracking-[0.15em] uppercase mb-1">Booking Process / 預約流程</h2>
+                <p class="text-[9px] text-stone-400 uppercase tracking-widest">Step-by-step Guide / 預約流程說明</p>
             </div>
             <div class="space-y-12">
-                <div class="flex gap-8 items-start">
-                    <span class="text-stone-200 font-mono text-2xl leading-none">01</span>
-                    <div class="border-l border-stone-100 pl-6">
-                        <h3 class="font-bold text-stone-800 text-sm tracking-widest uppercase">Consultation / 諮詢構思</h3>
-                        <p class="text-xs text-stone-500 mt-2 leading-relaxed">Prepare references, size (cm), and placement details.<br>準備好您的參考圖、尺寸（公分）及紋身位置。</p>
+                <div class="flex gap-6 items-start group">
+                    <span class="text-stone-100 font-light text-3xl leading-none">01</span>
+                    <div class="border-l border-stone-100 pl-6 pt-1">
+                        <h3 class="font-semibold text-stone-800 text-[10px] tracking-[0.15em] uppercase mb-2">Consultation & Concept / 諮詢構思</h3>
+                        <p class="text-xs text-stone-500 leading-relaxed font-light">
+                            Please prepare your reference images, desired size (in cm), and placement details.
+                            <br><span class="mt-1 block text-stone-400">請準備好您的參考圖、希望施作的尺寸（公分）及位置細節。</span>
+                        </p>
                     </div>
                 </div>
-                <div class="flex gap-8 items-start">
-                    <span class="text-stone-200 font-mono text-2xl leading-none">02</span>
-                    <div class="border-l border-stone-100 pl-6">
-                        <h3 class="font-bold text-stone-800 text-sm tracking-widest uppercase">Inquiry & Quote / 詢價報價</h3>
-                        <p class="text-xs text-stone-500 mt-2 leading-relaxed">Fill the form and we will provide an estimated quote.<br>填寫預約表單，我們將提供初步估價。</p>
+                <div class="flex gap-6 items-start group">
+                    <span class="text-stone-100 font-light text-3xl leading-none">02</span>
+                    <div class="border-l border-stone-100 pl-6 pt-1">
+                        <h3 class="font-semibold text-stone-800 text-[10px] tracking-[0.15em] uppercase mb-2">Inquiry & Quote / 詢價報價</h3>
+                        <p class="text-xs text-stone-500 leading-relaxed font-light">
+                            After filling out the booking form, we will provide a preliminary quote and estimated time.
+                            <br><span class="mt-1 block text-stone-400">填寫預約表單後，我們會根據圖案複雜度與尺寸提供初步報價。</span>
+                        </p>
                     </div>
                 </div>
-                <div class="flex gap-8 items-start">
-                    <span class="text-stone-200 font-mono text-2xl leading-none">03</span>
-                    <div class="border-l border-stone-100 pl-6">
-                        <h3 class="font-bold text-stone-800 text-sm tracking-widest uppercase">Deposit / 支付訂金</h3>
-                        <p class="text-xs text-stone-500 mt-2 leading-relaxed">Pay the deposit to secure your appointment slot.<br>支付訂金以正式保留您的預約時段。</p>
+                <div class="flex gap-6 items-start group">
+                    <span class="text-stone-100 font-light text-3xl leading-none">03</span>
+                    <div class="border-l border-stone-100 pl-6 pt-1">
+                        <h3 class="font-semibold text-stone-800 text-[10px] tracking-[0.15em] uppercase mb-2">Deposit / 支付訂金</h3>
+                        <p class="text-xs text-stone-500 leading-relaxed font-light">
+                            Once confirmed, please pay the deposit to secure your appointment.
+                            <br><span class="mt-1 block text-stone-400">報價確認後，請支付訂金以正式保留您的預約時段。</span>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Section: Notice -->
         <div id="notice" class="tab-content fade-in">
-            <div class="mb-10">
-                <h2 class="text-2xl font-light tracking-widest uppercase mb-1">Terms & Notice</h2>
-                <p class="text-xs text-stone-400 uppercase tracking-widest italic">預約條款須知</p>
+            <div class="mb-12">
+                <h2 class="text-xl font-light tracking-[0.15em] uppercase mb-1">Terms & Notice / 預約條款</h2>
+                <p class="text-[9px] text-stone-400 uppercase tracking-widest">Important Information / 預約條款須知</p>
             </div>
             <div class="space-y-4">
-                <div class="p-8 border border-stone-100 rounded-sm">
-                    <h4 class="font-bold text-[10px] uppercase tracking-[0.2em] mb-3 text-stone-400">Deposit Policy / 訂金政策</h4>
-                    <p class="text-sm text-stone-700 leading-relaxed font-light">Deposits are non-refundable. Any changes must be made 48h prior.<br>訂金恕不退還。如需改期，請於預約前 48 小時通知。</p>
+                <div class="p-8 bg-stone-50/50 border border-stone-100 rounded-sm">
+                    <h4 class="font-bold text-[8px] uppercase tracking-[0.2em] mb-3 text-stone-400">Deposit Policy / 訂金政策</h4>
+                    <p class="text-xs text-stone-700 leading-relaxed font-light">
+                        Deposits are non-refundable. For rescheduling, please notify at least 48 hours before your appointment.
+                        <br><span class="mt-2 block text-stone-500 text-[10px]">訂金支付後恕不退還。如需改期，請務必於 48 小時前通知。</span>
+                    </p>
                 </div>
                 <div class="p-8 border border-stone-100 rounded-sm">
-                    <h4 class="font-bold text-[10px] uppercase tracking-[0.2em] mb-3 text-stone-400">Health & Age / 健康與年齡</h4>
-                    <p class="text-sm text-stone-700 leading-relaxed font-light">No clients under 18. Please be in good health condition.<br>恕不接待未成年者。施作當天請確保身體狀況良好。</p>
-                </div>
-                <div class="p-8 border border-stone-100 rounded-sm">
-                    <h4 class="font-bold text-[10px] uppercase tracking-[0.2em] mb-3 text-stone-400">Design / 設計說明</h4>
-                    <p class="text-sm text-stone-700 leading-relaxed font-light">Designs are confirmed on-site. No advance sketch previews.<br>設計稿於當天現場確認並微調，不提供提前傳圖。</p>
+                    <h4 class="font-bold text-[8px] uppercase tracking-[0.2em] mb-3 text-stone-400">Health & Age / 健康與年齡</h4>
+                    <p class="text-xs text-stone-700 leading-relaxed font-light">
+                        No clients under 18. Please ensure you are in good health and have had enough sleep.
+                        <br><span class="mt-2 block text-stone-500 text-[10px]">恕不接待未滿 18 歲者。施作當天請確保身體狀況良好。</span>
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- Section: FAQ -->
         <div id="faq" class="tab-content fade-in">
-            <div class="mb-10">
-                <h2 class="text-2xl font-light tracking-widest uppercase mb-1">Common Questions</h2>
-                <p class="text-xs text-stone-400 uppercase tracking-widest italic">常見問題解答</p>
+            <div class="mb-12">
+                <h2 class="text-xl font-light tracking-[0.15em] uppercase mb-1">FAQ / 常見問題</h2>
+                <p class="text-[9px] text-stone-400 uppercase tracking-widest">Common Questions / 常見問題解答</p>
             </div>
             <div class="divide-y divide-stone-100">
                 <details class="group py-6">
                     <summary class="flex justify-between items-center cursor-pointer list-none">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-medium tracking-wide">How to get a quote?</span>
-                            <span class="text-[10px] text-stone-400 uppercase mt-1">如何獲得報價？</span>
-                        </div>
-                        <span class="text-stone-300 group-open:rotate-45 transition-transform text-xl font-light">+</span>
+                        <span class="text-[13px] font-medium tracking-wide pr-4">How to get an quote? / 如何獲得報價？</span>
+                        <span class="text-stone-300 group-open:rotate-45 transition-transform text-lg font-light">+</span>
                     </summary>
-                    <div class="pt-4 text-xs text-stone-500 leading-relaxed">
-                        Prices vary based on size and detail. Please use the booking form for an accurate estimate.<br>
-                        價格依據尺寸與細節而定，請透過表單提供資訊以獲得準確估價。
+                    <div class="pt-4 text-xs text-stone-500 leading-relaxed font-light">
+                        Pricing varies by detail and placement. Please provide full details in the form for an estimate.
+                        <br><span class="mt-1 block text-stone-400">價格根據精細程度、尺寸與位置而定。請透過預約表單提供詳細資料以供估價。</span>
                     </div>
                 </details>
                 <details class="group py-6">
                     <summary class="flex justify-between items-center cursor-pointer list-none">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-medium tracking-wide">Do you do cover-ups?</span>
-                            <span class="text-[10px] text-stone-400 uppercase mt-1">提供改圖服務嗎？</span>
-                        </div>
-                        <span class="text-stone-300 group-open:rotate-45 transition-transform text-xl font-light">+</span>
+                        <span class="text-[13px] font-medium tracking-wide pr-4">Do you do cover-ups? / 可以進行蓋圖 (Cover-up) 嗎？</span>
+                        <span class="text-stone-300 group-open:rotate-45 transition-transform text-lg font-light">+</span>
                     </summary>
-                    <div class="pt-4 text-xs text-stone-500 leading-relaxed">
-                        Yes, but we need clear photos of the existing tattoo first.<br>
-                        可以，但我們需要先看過原有的紋身照片評估可行性。
+                    <div class="pt-4 text-xs text-stone-500 leading-relaxed font-light">
+                        Yes, but cover-ups depend on the existing tattoo's status. Please attach clear photos in the form.
+                        <br><span class="mt-1 block text-stone-400">可以，但蓋圖服務需視原圖狀況而定。請在表單中附上現有紋身的清晰照片以進行評估。</span>
                     </div>
                 </details>
             </div>
         </div>
 
-        <!-- Section: Booking -->
-        <div id="booking" class="tab-content fade-in text-center py-10">
+        <div id="booking" class="tab-content fade-in text-center py-12">
             <div class="mb-12">
-                <h2 class="text-2xl font-light tracking-widest uppercase mb-2">Start Your Project</h2>
-                <p class="text-xs text-stone-400 uppercase tracking-widest italic">開始您的紋身計畫</p>
+                <h2 class="text-2xl font-light tracking-[0.15em] uppercase mb-2">Start Your Project</h2>
+                <p class="text-[9px] text-stone-400 uppercase tracking-[0.2em]">開始您的紋身計畫</p>
             </div>
-            <p class="text-sm text-stone-500 mb-12 leading-relaxed max-w-xs mx-auto font-light">
-                Ready to transform your idea into art?<br>點擊下方按鈕前往表單填寫細節。
+            <p class="text-xs text-stone-500 mb-12 leading-relaxed max-w-[280px] mx-auto font-light">
+                Ready to transform your ideas into art?
+                <br><span class="mt-2 block text-stone-400">點擊下方按鈕前往表單。</span>
             </p>
-            <a href="https://form.jotform.com/240480546787466" target="_blank" class="inline-block bg-stone-900 text-white px-14 py-4 rounded-full text-[10px] tracking-[0.4em] hover:bg-stone-700 transition-all shadow-sm">
-                BOOK NOW 立即預約
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScZjSxIctiuv57mCAh6iHkI7Bv2SFomCU52K6AHmbqdydqO3w/viewform?usp=dialog" target="_blank" class="inline-block bg-stone-900 text-white px-12 py-4 rounded-full text-[10px] tracking-[0.4em] hover:bg-stone-700 active:scale-95 transition-all shadow-md">
+                BOOK NOW / 立即預約
             </a>
         </div>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="fixed bottom-0 w-full bg-white/80 backdrop-blur-sm border-t border-stone-50 py-8">
+    <footer class="w-full bg-white/80 border-t border-stone-50 pt-10 pb-12">
         <div class="max-w-screen-md mx-auto px-6 text-center">
-            <p class="text-[9px] tracking-[0.3em] text-stone-300 uppercase">© 2026 CHUNNTATTOO Studio. All rights reserved.</p>
+            <p class="text-[7px] tracking-[0.4em] text-stone-300 uppercase">© 2026 CHUNNTATTOO. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
+        // --- 圖片配置區 ---
+        // 請確保你的 GitHub 倉庫裡有 images 資料夾，裡面有 1.jpg, 2.jpg...
+        const photoList = [
+            "images/1.jpg",
+            "images/2.jpg",
+            "images/3.jpg",
+            "images/4.jpg",
+            "images/5.jpg",
+            "images/6.jpg"
+        ];
+
+        function renderPortfolio() {
+            const grid = document.getElementById('portfolio-grid');
+            if (!grid) return;
+            
+            grid.innerHTML = photoList.map(src => `
+                <div class="portfolio-card">
+                    <img src="${src}" alt="Chunntattoo Work" loading="lazy" onload="this.style.opacity=1">
+                </div>
+            `).join('');
+        }
+
+        // --- 導航功能 ---
         function showTab(tabId) {
-            // 隱藏所有內容
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-            // 移除所有按鈕的啟用狀態
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('nav-active');
             });
             
-            // 顯示目標內容
             const target = document.getElementById(tabId);
-            target.classList.add('active');
-            
-            // 加入按鈕啟用狀態
-            document.getElementById('btn-' + tabId).classList.add('nav-active');
-            
-            // 回到內容頂部
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (target) {
+                target.classList.add('active');
+                document.getElementById('btn-' + tabId).classList.add('nav-active');
+                
+                const offset = 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
         }
+
+        // 頁面加載後執行
+        window.onload = () => {
+            renderPortfolio();
+        };
     </script>
 </body>
 </html>
